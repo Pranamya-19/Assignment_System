@@ -1,11 +1,10 @@
-from flask import jsonify
+from flask import Flask, jsonify
 from marshmallow.exceptions import ValidationError
 from core import app
 from core.apis.assignments import student_assignments_resources, teacher_assignments_resources
 from core.libs import helpers
 from core.libs.exceptions import FyleError
 from werkzeug.exceptions import HTTPException
-
 from sqlalchemy.exc import IntegrityError
 
 app.register_blueprint(student_assignments_resources, url_prefix='/student')
@@ -18,7 +17,6 @@ def ready():
         'status': 'ready',
         'time': helpers.get_utc_now()
     })
-
     return response
 
 
@@ -42,3 +40,8 @@ def handle_error(err):
         ), err.code
 
     raise err
+
+
+if __name__ == "__main__":
+    from waitress import serve
+    serve(app, host='0.0.0.0', port=5000)
